@@ -74,45 +74,22 @@ class AnswerPollSerializer(serializers.Serializer):
         return user_answer
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserId
-        fields = ('user_id',)
-
-
-class UserPollSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Poll
-        fields = ('name', 'desc')
-
-
-class UserQuestionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Question
-        fields = ('desc',)
-
-
-class QuesChoicesUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = QuesChoices
-        fields = ('desc',)
-
 
 class UserAnswerQuesSerializer(serializers.ModelSerializer):
-    question = UserQuestionSerializer()
-    ques_choices = QuesChoicesUserSerializer(many=True)
+    question = serializers.SlugRelatedField(slug_field='desc',read_only=True)
+    ques_choices = serializers.SlugRelatedField(slug_field='desc',read_only=True,many=True)
 
     class Meta:
         model = UserAnswerQues
         fields = ('text', 'question', 'ques_choices')
 
-
 class UserAnswerSerializer(serializers.ModelSerializer):
     """Сериализция пользователя и пройденного опроса, включает в себя вопросы и ответы"""
-    user_id = UserSerializer()
-    poll = UserPollSerializer()
+    user_id = serializers.SlugRelatedField(slug_field='user_id',read_only=True)
+    poll = serializers.SlugRelatedField(slug_field='name',read_only=True)
     user_poll = UserAnswerQuesSerializer(many=True)
 
     class Meta:
         model = UserPoll
-        fields = ('poll', 'user_id', 'user_poll')
+        fields = ('user_id','poll','user_poll')
+

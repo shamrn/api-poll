@@ -45,3 +45,5 @@ class AnswerUserList(generics.ListAPIView):
         user_id = self.kwargs['user_id']
         answer = UserPoll.objects.filter(user_id__user_id=user_id)
         return answer
+
+
