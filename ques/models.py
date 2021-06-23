@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -15,6 +16,13 @@ class Poll(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self,*args,**kwargs):
+        if Poll.objects.filter(pk=self.pk).exists():
+            if self.start_date and Poll.objects.filter(pk=self.pk,start_date__isnull=False):
+                raise ValidationError({'start_date': 'Дата уже заполнена, опрос изменить невозможно'})
+        if self.start_date and not self.end_date:
+            raise ValidationError({'end_date':'Заполните дату окончания опроса'})
 
 
 
