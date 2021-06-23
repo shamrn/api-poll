@@ -21,10 +21,7 @@ class PollAdmin(nested_admin.NestedModelAdmin):
     inlines = [QuestionInline]
 
 
-class UserAnswerQuesInline(nested_admin.NestedStackedInline):
-    model = UserAnswerQues
-    extra = 1
-
+class Persmission:
     def has_change_permission(self, request, obj=None):
         return False
 
@@ -34,36 +31,27 @@ class UserAnswerQuesInline(nested_admin.NestedStackedInline):
     def has_delete_permission(self, request, obj=None):
         return False
 
+class UserAnswerQuesInline(Persmission,nested_admin.NestedStackedInline):
+    model = UserAnswerQues
+    extra = 1
 
-class UserPollInline(nested_admin.NestedStackedInline):
+
+
+
+class UserPollInline(Persmission,nested_admin.NestedStackedInline):
 
     model = UserPoll
     inlines = [UserAnswerQuesInline]
     max = 1
 
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 @admin.register(UserId)
-class UserIdAdmin(nested_admin.NestedModelAdmin):
+class UserIdAdmin(Persmission,nested_admin.NestedModelAdmin):
     model = UserId
     inlines = [UserPollInline]
 
-    def has_change_permission(self, request, obj=None):
-        return False
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 admin.site.unregister([User, Group])
